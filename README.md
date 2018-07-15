@@ -4,7 +4,7 @@
 
 "esx_vehicleInfos" is my first script that i share! It allows you to have informations about a vehicle in front of you! You have just have to look a vehicle and press "E" key.
 
-There are 2 languages in the config file, FR and EN.
+There are 2 languages in the config file, **FR** and **EN**.
 
 **How to install it:**
 
