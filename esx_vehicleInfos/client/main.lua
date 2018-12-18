@@ -29,20 +29,20 @@ local Keys = {
 ESX                 = nil
 
 Citizen.CreateThread(function()
-  while ESX == nil do
-    TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-    Citizen.Wait(35)
-  end
+	while ESX == nil do
+	    TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+	    Citizen.Wait(35)
+	end
 end)
 
-function VehicleInFront() -- Check vehicle in front
+function VehicleInFront() -- Pour le diagnostic, récupérer le véhicule devant le ped
 
-    local pos = GetEntityCoords(GetPlayerPed(-1))
-    local entityWorld = GetOffsetFromEntityInWorldCoords(GetPlayerPed(-1), 0.0, 6.0, 0.0)
-    local rayHandle = CastRayPointToPoint(pos.x, pos.y, pos.z-0.8, entityWorld.x, entityWorld.y, entityWorld.z, 7, GetPlayerPed(-1), 0)
-    local a, b, c, d, result = GetRaycastResult(rayHandle)
-    return result
-
+    local vehicle, distance = ESX.Game.GetClosestVehicle()
+    if vehicle ~= nil and distance < 3 then
+        return vehicle
+    else 
+        return 0 
+    end
 end
 
 Citizen.CreateThread(function() -- If there are no vehicles in front of you, it close the menu.
@@ -51,10 +51,10 @@ Citizen.CreateThread(function() -- If there are no vehicles in front of you, it 
 
         local playerPed   = GetPlayerPed(-1)
         local vehicle     = VehicleInFront()
-        local closecar    = GetClosestVehicle(x, y, z, 6.0, 0, 71)
 
-        if vehicle == 0 and closecar == 0 then
+        if vehicle == 0 then
             ESX.UI.Menu.Close('default', GetCurrentResourceName(), 'vehicle_infos')
+            Wait(1000)
         end
     end
 end)
@@ -62,7 +62,7 @@ end)
 
 Citizen.CreateThread(function()
 	while true do
-		Citizen.Wait(0)
+		Wait(1)
 
 		  if IsControlJustPressed(1, Keys['E']) then -- If E key pressed then
 
@@ -78,9 +78,9 @@ Citizen.CreateThread(function()
           local plate       = GetVehicleNumberPlateText(vehicle)
 
           local model       = GetEntityModel(vehicle)
-          local modelName = GetDisplayNameFromVehicleModel(model)
+          local modelName 	= GetDisplayNameFromVehicleModel(model)
 
-          if vehicle > 0 and closecar ~= nil and model ~= 0 and modelName ~= "CARNOTFOUND" then -- If there is a vehicle in front of you then
+          if model ~= 0 and modelName ~= "CARNOTFOUND" then -- If there is a vehicle in front of you then
 
                 if categ == 0 then categ = _U('Compacts')
                 elseif categ == 1 then categ = _U('Sedans')
